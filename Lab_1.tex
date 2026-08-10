@@ -1,0 +1,407 @@
+% !TEX program = pdflatex
+\documentclass[12pt,a4paper]{article}
+
+% -------------------------------------------------
+% Packages
+% -------------------------------------------------
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{hyperref}
+
+% -------------------------------------------------
+% General formatting
+% -------------------------------------------------
+\onehalfspacing
+\setlength{\parindent}{0pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    pdftitle={Blockchain Laboratory - Experiment 1},
+    pdfauthor={}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Blockchain Laboratory}
+\rhead{Experiment No. 1}
+\cfoot{Page \thepage}
+\setlength{\headheight}{15pt}
+
+\titleformat{\section}
+  {\large\bfseries}
+  {\thesection.}
+  {0.5em}
+  {}
+\titleformat{\subsection}
+  {\normalsize\bfseries}
+  {\thesubsection.}
+  {0.5em}
+  {}
+
+% -------------------------------------------------
+% Code formatting
+% -------------------------------------------------
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{codecomment}{RGB}{80,120,80}
+\definecolor{codekeyword}{RGB}{70,70,150}
+\definecolor{codestring}{RGB}{150,70,70}
+
+\lstdefinestyle{pythonstyle}{
+    language=Python,
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{codekeyword}\bfseries,
+    commentstyle=\color{codecomment},
+    stringstyle=\color{codestring},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    numbersep=8pt,
+    frame=single,
+    framerule=0.4pt,
+    breaklines=true,
+    breakatwhitespace=false,
+    showstringspaces=false,
+    tabsize=4,
+    columns=fullflexible,
+    keepspaces=true,
+    literate={→}{{$\rightarrow$}}1
+}
+
+\lstdefinestyle{outputstyle}{
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\small,
+    frame=single,
+    framerule=0.4pt,
+    breaklines=true,
+    columns=fullflexible,
+    keepspaces=true
+}
+
+% -------------------------------------------------
+% Document
+% -------------------------------------------------
+\begin{document}
+
+% -------------------------------------------------
+% Title page
+% -------------------------------------------------
+\begin{titlepage}
+    \centering
+    \vspace*{1.5cm}
+
+    {\Large\bfseries BLOCKCHAIN LABORATORY\par}
+    \vspace{1.2cm}
+
+    {\large\bfseries Experiment No. 1\par}
+    \vspace{0.8cm}
+
+    {\LARGE\bfseries Cryptography in Blockchain,\\
+    Merkle Root Tree Hash\par}
+
+    \vspace{1cm}
+
+    \begin{tabular}{rl}
+    \textbf{Name:} & Nikhil Sunchu \\[0.6cm]
+    \textbf{Roll No.:} & 31 \\[0.6cm]
+    \textbf{Class/section} & D20A \\[0.6cm]
+    \textbf{Date}& \hrulefill \\[0.6cm]
+    \end{tabular}
+
+    \vfill
+    {\large Blockchain Laboratory\par}
+\end{titlepage}
+
+% -------------------------------------------------
+\section{Aim}
+Cryptography in Blockchain, Merkle Root Tree Hash.
+
+% -------------------------------------------------
+\section{Lab Objectives}
+To explore Blockchain concepts.
+
+\subsection{Lab Outcome}
+\textbf{LO1:} Creating Cryptographic Hash using Merkle Tree.
+
+% -------------------------------------------------
+\section{Tasks to be Performed}
+\begin{enumerate}[label=\arabic*., leftmargin=*]
+    \item Make a copy of the Google Colab Notebook.
+    \item Try to solve the errors in each of the four programs.
+    \item In the fourth program, \textit{Constructing a Merkle Tree Root Hash}, modify the code as follows:
+    \begin{itemize}[leftmargin=1.5em]
+        \item Update the transactions list with valid entries.
+    \end{itemize}
+
+    Example:
+\begin{lstlisting}[style=pythonstyle]
+transactions = [
+    'A -> B : $10',
+    'B -> C : $5',
+    'C -> A : $2'
+]
+\end{lstlisting}
+
+    \item Sample transactions to be considered:
+    \begin{itemize}[leftmargin=1.5em]
+        \item T1: Alice $\rightarrow$ Bob : \$200
+        \item T2: Bob $\rightarrow$ Dave : \$500
+        \item T3: Dave $\rightarrow$ Eve : \$100
+        \item T4: Eve $\rightarrow$ Alice : \$300
+        \item T5: Roo $\rightarrow$ Bob : \$50
+    \end{itemize}
+
+    \item Hash the transactions before combining them in the \texttt{for} loop.
+    \item Print all the intermediate hashes during the construction of the Merkle Tree Root Hash.
+\end{enumerate}
+
+% -------------------------------------------------
+\section{Tools and Libraries Used}
+\begin{itemize}
+    \item Python
+    \item Python library: \texttt{hashlib}
+\end{itemize}
+
+% -------------------------------------------------
+\section{Tasks Performed}
+\begin{enumerate}[label=\arabic*., leftmargin=*]
+    \item \textbf{Hash Generation using SHA-256:}
+    \begin{itemize}[leftmargin=1.5em]
+        \item Developed a Python program to compute a SHA-256 hash for any given input string using the \texttt{hashlib} library.
+    \end{itemize}
+
+    \item \textbf{Target Hash Generation with Nonce:}
+    \begin{itemize}[leftmargin=1.5em]
+        \item Created a program to generate a hash code by concatenating a user input string and a nonce value to simulate the mining process.
+    \end{itemize}
+
+    \item \textbf{Proof-of-Work Puzzle Solving:}
+    \begin{itemize}[leftmargin=1.5em]
+        \item Implemented a program to find the nonce that, when combined with a given input string, produces a hash starting with a specified number of leading zeros.
+    \end{itemize}
+
+    \item \textbf{Merkle Tree Construction:}
+    \begin{itemize}[leftmargin=1.5em]
+        \item Built a Merkle Tree from a list of transactions by recursively hashing pairs of transaction hashes, doubling the last node if needed, and generating the Merkle Root hash for blockchain transaction integrity.
+    \end{itemize}
+\end{enumerate}
+
+% -------------------------------------------------
+\section{Programs and Outputs}
+
+\subsection{Program 1: SHA-256 Hash Generation}
+
+\begin{lstlisting}[style=pythonstyle]
+import hashlib
+
+def create_hash(string):
+    # Create a hash object using SHA-256 algorithm
+    hash_object = hashlib.sha256()
+
+    # Convert the string to bytes and update the hash object
+    hash_object.update(string.encode('utf-8'))
+
+    # Get the hexadecimal representation of the hash
+    hash_string = hash_object.hexdigest()
+
+    # Return the hash string
+    return hash_string
+
+
+# Example usage
+input_string = input("Enter a string: ")
+hash_result = create_hash(input_string)
+print("Hash:", hash_result)
+\end{lstlisting}
+
+\textbf{Output:}
+\begin{lstlisting}[style=outputstyle]
+Enter a string: NikhilSunchu
+Hash: 4758bd001bb84cf08b1010df52aaf02b2d1fa28eb7da5077fc5391d4727b206d
+\end{lstlisting}
+
+% -------------------------------------------------
+\subsection{Program 2: Target Hash Generation with Nonce}
+
+\begin{lstlisting}[style=pythonstyle]
+import hashlib
+
+# Get user input
+input_string = input("Enter a string: ")
+nonce = input("Enter the nonce: ")
+
+# Concatenate the string and nonce
+hash_string = input_string + nonce
+
+# Calculate the hash using SHA-256
+hash_object = hashlib.sha256(hash_string.encode('utf-8'))
+hash_code = hash_object.hexdigest()
+
+# Print the hash code
+print("Hash Code:", hash_code)
+\end{lstlisting}
+
+\textbf{Output:}
+\begin{lstlisting}[style=outputstyle]
+Enter a string: NikhilSunchu
+Enter the nonce: 31
+Hash Code:
+aed188a474ce54614e5b9224ca8956a559707e69aaaa3ccae58e49e1f557e740
+\end{lstlisting}
+
+% -------------------------------------------------
+\subsection{Program 3: Proof-of-Work Puzzle Solving}
+
+The following is the program presented in the source document, with its indentation formatted for readability.
+
+\begin{lstlisting}[style=pythonstyle]
+import hashlib
+
+def find_nonce(input_string, num_zeros):
+    nonce = 0
+    hash_prefix = '0' * num_zeros
+
+    while True:
+        # Concatenate the string and nonce
+        hash_string = input_string + str(nonce)
+
+        # Calculate the hash using SHA-256
+        hash_object = hashlib.sha256(hash_string.encode('utf-8'))
+        hash_code = hash_object.hexdigest()
+
+        # Check if the hash code has the required number of leading zeros
+        if hash_code.startswith(hash_prefix):
+            print("Hash:", hash_code)
+            return nonce
+
+        nonce += 1
+
+
+# Get user input
+input_string = "NikhilSunchu"
+num_zeros = 1
+
+# Find the expected nonce
+expected_nonce = find_nonce(input_string, num_zeros)
+
+# Print the expected nonce
+print("Input String:", input_string)
+print("Leading Zeros:", num_zeros)
+print("Expected Nonce:", expected_nonce)
+\end{lstlisting}
+
+\textbf{Output:}
+\begin{lstlisting}[style=outputstyle]
+Hash: 02ea712faf82d8f28cbf209efce1276ee29628da245879c3b569daf6a3cf370c
+Input String: NikhilSunchu
+Leading Zeros: 1
+Expected Nonce: 11
+\end{lstlisting}
+
+% -------------------------------------------------
+\subsection{Program 4: Merkle Tree Construction}
+
+\begin{lstlisting}[style=pythonstyle]
+import hashlib
+
+def build_merkle_tree(transactions):
+    if len(transactions) == 0:
+        return None
+
+    if len(transactions) == 1:
+        return transactions[0]
+
+    # Recursive construction of the Merkle Tree
+    while len(transactions) > 1:
+        if len(transactions) % 2 != 0:
+            transactions.append(transactions[-1])
+
+        new_transactions = []
+
+        for i in range(0, len(transactions), 2):
+            combined = transactions[i] + transactions[i + 1]
+            hash_combined = hashlib.sha256(
+                combined.encode('utf-8')
+            ).hexdigest()
+            new_transactions.append(hash_combined)
+
+        transactions = new_transactions
+
+    return transactions[0]
+
+
+# Example usage
+transactions = [
+    "Alice -> Bob : $200",
+    "Bob -> Dave : $500",
+    "Dave -> Eve : $100",
+    "Eve -> Alice : $300",
+    "Roo -> Bob : $50"
+]
+
+merkle_root = build_merkle_tree(transactions)
+print("Merkle Root:", merkle_root)
+\end{lstlisting}
+
+\textbf{Output:}
+\begin{lstlisting}[style=outputstyle]
+Merkle Root:
+e338807e9d0a48e9940b7d62e8b4b339dc55858549634f783114d2e7db031a33
+\end{lstlisting}
+
+\textbf{Note:} The source document instructs that the transactions should be hashed before they are combined in the \texttt{for} loop and that intermediate hashes should be printed. The output above is the output recorded in the source document; the program listing has been formatted without changing that recorded result.
+
+% -------------------------------------------------
+\section{Viva Preparation}
+
+\subsection{1. Cryptographic Hash Functions in Blockchain}
+A cryptographic hash function is used in blockchain to generate a fixed-length representation of input data. SHA-256 is used in the programs in this experiment.
+
+\subsection{2. What is a Merkle Tree?}
+A Merkle Tree is a tree-like data structure in which transaction data is represented by hashes. Pairs of hashes are combined and hashed repeatedly until a single hash, called the Merkle Root, is obtained.
+
+\subsection{3. What is a Cryptographic Puzzle and Explain the Golden Nonce}
+A cryptographic puzzle requires finding a nonce that produces a hash satisfying a specified condition. In the experiment, the condition is that the resulting hash begins with a specified number of leading zeros. The nonce satisfying the required condition is the expected or ``golden'' nonce.
+
+\subsection{4. How Does a Merkle Tree Work?}
+The transactions are converted into hashes. Hashes are combined in pairs and hashed again. If the number of nodes at a level is odd, the last node is duplicated. This process continues until one hash remains, which is the Merkle Root.
+
+\subsection{5. Benefits of a Merkle Tree}
+\begin{itemize}
+    \item Efficient representation of a large number of transactions.
+    \item Enables efficient verification of transaction integrity.
+    \item A single Merkle Root summarizes the transaction set.
+    \item Supports fast verification of data in blockchain blocks.
+\end{itemize}
+
+\subsection{6. Use Cases of a Merkle Tree}
+Merkle Trees are used in blockchain systems to summarize transactions and verify that transaction data has not been altered. They are particularly useful for efficient transaction verification.
+
+% -------------------------------------------------
+\section{Conclusion}
+This study demonstrates fundamental cryptographic concepts and their applications within blockchain technology:
+
+\begin{itemize}
+    \item \textbf{SHA-256 Hashing} provides a secure and unique fingerprint for any input, ensuring data integrity.
+    \item \textbf{Nonce and Target Hashing} allow the simulation of proof-of-work consensus, emphasizing the difficulty of mining blocks by meeting hash conditions such as leading zeros.
+    \item \textbf{Proof-of-Work Puzzle Solving} shows how mining requires computational effort to find a nonce that makes the hash satisfy the required network difficulty.
+    \item \textbf{Merkle Tree Construction} efficiently summarizes and validates large numbers of transactions with a single Merkle Root hash, which is essential in blockchain for fast verification and ensuring the integrity of data blocks.
+\end{itemize}
+
+Together, these implementations capture the essence of how cryptography underpins blockchain security, immutability, and efficiency, especially through hash functions and structures such as Merkle Trees that enable trustless and decentralized transaction management.
+
+\end{document}
