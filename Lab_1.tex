@@ -318,40 +318,44 @@ Expected Nonce: 11
 \begin{lstlisting}[style=pythonstyle]
 import hashlib
 
+def hash_data(data):
+  return hashlib.sha256(data.encode('utf-8')).hexdigest()
+
 def build_merkle_tree(transactions):
     if len(transactions) == 0:
         return None
 
-    if len(transactions) == 1:
-        return transactions[0]
+    transactions = [hash_data(transaction) for transaction in transactions]
+    
+    print("Initial Transaction Hashes: ")
 
-    # Recursive construction of the Merkle Tree
+    for i, transaction in enumerate(transactions):
+        print(f"Transaction {i+1}: {transaction}")
+    
     while len(transactions) > 1:
+
         if len(transactions) % 2 != 0:
             transactions.append(transactions[-1])
 
         new_transactions = []
-
+        
         for i in range(0, len(transactions), 2):
-            combined = transactions[i] + transactions[i + 1]
-            hash_combined = hashlib.sha256(
-                combined.encode('utf-8')
-            ).hexdigest()
+            combined = transactions[i] + transactions[i+1]
+            hash_combined = hashlib.sha256(combined.encode('utf-8')).hexdigest()
+            
+            print(f"Hash {i // 2 + 1}")
+            print(f"{transactions[i]}")
+            print(f" + {transactions[i+1]}")
+            print(f" = {hash_combined}")
+
             new_transactions.append(hash_combined)
 
         transactions = new_transactions
 
     return transactions[0]
 
-
 # Example usage
-transactions = [
-    "Alice -> Bob : $200",
-    "Bob -> Dave : $500",
-    "Dave -> Eve : $100",
-    "Eve -> Alice : $300",
-    "Roo -> Bob : $50"
-]
+transactions = ["Alice → Bob : $200", "Bob → Dave : $500", "Dave → Eve : $100", "Eve → Alice : $300", "Roo → Bob : $50"]
 
 merkle_root = build_merkle_tree(transactions)
 print("Merkle Root:", merkle_root)
@@ -359,8 +363,38 @@ print("Merkle Root:", merkle_root)
 
 \textbf{Output:}
 \begin{lstlisting}[style=outputstyle]
-Merkle Root:
-e338807e9d0a48e9940b7d62e8b4b339dc55858549634f783114d2e7db031a33
+Initial Transaction Hashes: 
+Transaction 1: d7d1c2448f818062ab9bb89aa9f95564670895f927d730d2d43ba8e5cada8a4d
+Transaction 2: ebc396058242fc4cb711aa1dd2c2ce1c44818b9d35c9d53465bee3c12462072e
+Transaction 3: 56a42d8ba343cbcf8133e8a0300564876f2e76dfe8281db52fccbad24fc8d88a
+Transaction 4: fc3d2297f8b8aa145fa4ded66a1ed06db9d46d661a8d3673e1ceb0dbbaf597a6
+Transaction 5: 70ec9a2f7f21cf62ef7acfd60032bcc094a2739d2ae73dea3e929512b9a00c4a
+Hash 1
+d7d1c2448f818062ab9bb89aa9f95564670895f927d730d2d43ba8e5cada8a4d
+ + ebc396058242fc4cb711aa1dd2c2ce1c44818b9d35c9d53465bee3c12462072e
+ = 51215ac8c39b7d8d72ce873c5cf75a9b7d3edd069c79007a1f0827af3e43d258
+Hash 2
+56a42d8ba343cbcf8133e8a0300564876f2e76dfe8281db52fccbad24fc8d88a
+ + fc3d2297f8b8aa145fa4ded66a1ed06db9d46d661a8d3673e1ceb0dbbaf597a6
+ = b5e0a195812483b212784056d2bf15f8caeff4fb4bde6e4910d9827d039632f1
+Hash 3
+70ec9a2f7f21cf62ef7acfd60032bcc094a2739d2ae73dea3e929512b9a00c4a
+ + 70ec9a2f7f21cf62ef7acfd60032bcc094a2739d2ae73dea3e929512b9a00c4a
+ = 7b5c2d1c9a72494009e89c8608db836a79e71e13f5d7f12822b026364a22b5b6
+Hash 1
+51215ac8c39b7d8d72ce873c5cf75a9b7d3edd069c79007a1f0827af3e43d258
+ + b5e0a195812483b212784056d2bf15f8caeff4fb4bde6e4910d9827d039632f1
+ = 8e3aa833a93cf5663d5138a8d80d8e6a8cf006517a462fb4260806795701f45d
+Hash 2
+7b5c2d1c9a72494009e89c8608db836a79e71e13f5d7f12822b026364a22b5b6
+ + 7b5c2d1c9a72494009e89c8608db836a79e71e13f5d7f12822b026364a22b5b6
+ = 5b0369cfb2de9ed3b41d380675c240323de05bc9b9062fae8cd5991902828cd2
+Hash 1
+8e3aa833a93cf5663d5138a8d80d8e6a8cf006517a462fb4260806795701f45d
+ + 5b0369cfb2de9ed3b41d380675c240323de05bc9b9062fae8cd5991902828cd2
+ = 382f188ce8666903c084f5704ade4a7e1a1948242bdfd0de2b529d9fedb6fe2f
+Merkle Root: 382f188ce8666903c084f5704ade4a7e1a1948242bdfd0de2b529d9fedb6fe2f
+
 \end{lstlisting}
 
 \textbf{Note:} The source document instructs that the transactions should be hashed before they are combined in the \texttt{for} loop and that intermediate hashes should be printed. The output above is the output recorded in the source document; the program listing has been formatted without changing that recorded result.
