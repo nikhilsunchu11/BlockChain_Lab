@@ -1,0 +1,12 @@
+[project]
+name = "exp2"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Nikhil Sunchu", email = "2023.nikhil.sunchu@ves.ac.in" }
+]
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "flask>=3.1.3",
+]
