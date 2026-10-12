@@ -1,0 +1,194 @@
+
+% !TEX program = pdflatex
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[expansion=false]{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,
+ pdftitle={Blockchain Laboratory - Experiment 5},pdfauthor={Nikhil Sunchu}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Blockchain Laboratory}
+\rhead{Experiment No. 5}
+\cfoot{Page \thepage}
+\setlength{\headheight}{15pt}
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{codecomment}{RGB}{80,120,80}
+\definecolor{codekeyword}{RGB}{70,70,150}
+\definecolor{codestring}{RGB}{150,70,70}
+\definecolor{codetype}{RGB}{0,110,110}
+\lstdefinestyle{soliditystyle}{
+ language=C,
+ backgroundcolor=\color{codebg},
+ basicstyle=\ttfamily\footnotesize,
+ keywordstyle=\color{codekeyword}\bfseries,
+ commentstyle=\color{codecomment},
+ stringstyle=\color{codestring},
+ numbers=left, numberstyle=\tiny\color{gray}, numbersep=8pt,
+ frame=single, framerule=0.4pt, breaklines=true,
+ breakatwhitespace=false, showstringspaces=false,
+ tabsize=4, columns=fullflexible, keepspaces=true,
+ morekeywords={pragma,solidity,contract,mapping,address,uint,public,private,internal,external,view,pure,returns,return,function,constructor,if,else,for,while,require,msg,sender},
+ keywordstyle=[2]\color{codetype}\bfseries,
+ morekeywords=[2]{address,uint,bool,string,bytes}
+}
+\begin{document}
+\begin{titlepage}
+\centering
+\vspace*{1.5cm}
+{\Large\bfseries BLOCKCHAIN LABORATORY\par}
+\vspace{1.2cm}
+{\large\bfseries Experiment No. 5\par}
+\vspace{0.8cm}
+{\LARGE\bfseries Study of Solidity Program Structure, Basic Constructs, Compilation and Deployment Environment\par}
+\vspace{1.5cm}
+\begin{tabular}{rl}
+\textbf{Name:} & Nikhil Sunchu \\[0.6cm]
+\textbf{Roll No.:} & 31 \\[0.6cm]
+\textbf{Class/section:} & D20A \\[0.6cm]
+\textbf{Date:} & \hrulefill \\[0.6cm]
+\end{tabular}
+\vfill
+{\large Blockchain Laboratory\par}
+\end{titlepage}
+
+\section{Aim}
+Study the structure of a Solidity program, its basic constructs, and the compilation and deployment environment using Remix IDE.
+
+\section{Theory}
+\subsection{1. Solidity and Smart Contracts}
+Solidity is a high-level, statically typed programming language used to develop smart contracts for Ethereum-compatible blockchain platforms. A smart contract is a program deployed on a blockchain that executes predefined logic when its functions are called. Remix IDE provides an online environment to write, compile, deploy, and test Solidity contracts.
+
+\subsection{2. Structure of a Solidity Program}
+A Solidity source file commonly contains an SPDX license identifier, a compiler-version pragma, a contract declaration, state variables, and functions. The \texttt{pragma} statement specifies the compiler versions compatible with the source code. A contract groups related state and behaviour under one name.
+
+\subsection{3. Data Types, State Variables and Mappings}
+Solidity provides types such as \texttt{uint} for unsigned integers, \texttt{bool} for Boolean values, \texttt{address} for Ethereum addresses, and \texttt{string} for text. State variables are stored as part of the contract's persistent state. A mapping stores key-value pairs and is useful for looking up a value using a key. In this experiment, a mapping associates an Ethereum address with an unsigned integer balance.
+
+\subsection{4. Functions and Visibility}
+Functions contain the operations performed by a contract. The \texttt{public} visibility specifier allows a function to be called both internally and externally. A function marked \texttt{view} can read contract state without modifying it. A function that changes a state variable is executed as a transaction when called externally.
+
+\subsection{5. Compilation and Deployment}
+Compilation checks the Solidity source code and generates contract artifacts, including the ABI and bytecode. Deployment creates a contract instance in the selected blockchain environment. Remix VM provides a simulated blockchain and test accounts, allowing contracts to be deployed and tested without using real Ether.
+
+\subsection{6. Transactions and Gas}
+A state-changing function call is submitted as a transaction and consumes gas for its execution. Remix displays information such as the transaction hash, block number, gas used, and execution cost. A read-only \texttt{view} function is generally invoked as a call and does not create a state-changing transaction.
+
+\section{Tools and Environment Used}
+\begin{itemize}
+    \item Remix IDE (version 2.6.6 as shown in the screenshots)
+    \item Solidity compiler, version 0.8.34 in the compiler panel
+    \item Remix VM with the Osaka VM setting
+    \item Solidity source file: \texttt{Nikhilsunchu.sol}
+    \item Browser-based code editor, compiler, and Deploy \& Run Transactions panel
+\end{itemize}
+
+\section{Tasks Performed}
+\subsection{Task 1 -- Write the Solidity Program}
+\begin{itemize}
+    \item Created a Solidity source file named \texttt{Nikhilsunchu.sol} in Remix IDE.
+    \item Defined the \texttt{GasTransaction} contract.
+    \item Used a mapping to store a balance for each Ethereum address.
+    \item Implemented \texttt{setBalance()} to update the balance associated with the caller.
+    \item Implemented \texttt{getBalance()} to read and return the caller's balance.
+\end{itemize}
+
+{\renewcommand{\baselinestretch}{0.9}\selectfont
+\begin{lstlisting}[style=soliditystyle]
+ // SPDX-License-Identifier: MIT
+ pragma solidity ^0.8.18;
+
+ contract GasTransaction {
+     mapping(address => uint) public balances;
+
+     function setBalance(uint amount) public {
+         balances[msg.sender] = amount;
+     }
+
+     function getBalance() public view returns (uint) {
+         return balances[msg.sender];
+     }
+ }
+\end{lstlisting}
+}
+
+\subsection{Task 2 -- Compile the Contract}
+\begin{itemize}
+    \item Opened the Solidity Compiler panel in Remix IDE.
+    \item Selected a compatible Solidity 0.8.x compiler.
+    \item Compiled the source file by clicking the Compile button.
+    \item Confirmed successful compilation before proceeding to deployment.
+    \item The source code and compiler panel are shown in Figure~\ref{fig:compile}.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{swappy-20261012-120105.png}
+\caption{Solidity source code and compiler panel in Remix IDE}
+\label{fig:compile}
+\end{figure}
+
+\subsection{Task 3 -- Deploy the Contract}
+\begin{itemize}
+    \item Opened the Deploy \& Run Transactions panel.
+    \item Selected \texttt{Remix VM} as the execution environment.
+    \item Selected and deployed the \texttt{GasTransaction} contract.
+    \item Verified that the deployed contract appeared in the Deployed Contracts section.
+    \item Used the displayed contract functions for interaction and testing.
+\end{itemize}
+
+\subsection{Task 4 -- Execute the State-Changing Function}
+\begin{itemize}
+    \item Entered \texttt{500} as the argument to \texttt{setBalance()}.
+    \item Clicked the Transact button to execute the function.
+    \item Remix created and mined a transaction because the function modifies contract state.
+    \item Checked the transaction status, transaction hash, block hash, block number, and gas information.
+    \item The successful transaction details are shown in Figure~\ref{fig:transaction}.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{swappy-20261012-120710.png}
+\caption{Successful execution of setBalance(500) and transaction details}
+\label{fig:transaction}
+\end{figure}
+
+\subsection{Task 5 -- Verify the Stored Value}
+\begin{itemize}
+    \item Called the \texttt{getBalance()} function from the deployed contract.
+    \item Observed the returned value \texttt{500}.
+    \item Confirmed that the state-changing transaction updated the mapping for the selected account.
+    \item The returned value and Remix terminal output are shown in Figure~\ref{fig:balance}.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{swappy-20261012-120839.png}
+\caption{Calling getBalance() and verifying the stored value}
+\label{fig:balance}
+\end{figure}
+
+\section{Result}
+The Solidity contract was compiled and deployed successfully in Remix VM. The \texttt{setBalance(500)} transaction updated the mapping for the caller's address, and \texttt{getBalance()} returned \texttt{500}. The experiment demonstrated the Solidity contract structure, state variables, mappings, function visibility, read-only functions, deployment, and transaction gas information.
+
+\section{Conclusion}
+The experiment provided practical familiarity with writing and compiling a Solidity smart contract in Remix IDE and deploying it in a simulated blockchain environment. By interacting with the \texttt{GasTransaction} contract, the operation of a mapping, a state-changing function, and a \texttt{view} function was observed. The transaction details also illustrated how Remix reports execution status and gas usage.
+\end{document}
