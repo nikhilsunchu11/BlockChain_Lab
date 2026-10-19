@@ -1,0 +1,211 @@
+% !TEX program = pdflatex
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[expansion=false]{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,
+ pdftitle={Blockchain Laboratory - Experiment 6},pdfauthor={Nikhil Sunchu}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Blockchain Laboratory}
+\rhead{Experiment No. 6}
+\cfoot{Page \thepage}
+\setlength{\headheight}{15pt}
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{codecomment}{RGB}{80,120,80}
+\definecolor{codekeyword}{RGB}{70,70,150}
+\definecolor{codestring}{RGB}{150,70,70}
+\definecolor{codetype}{RGB}{0,110,110}
+\lstdefinestyle{soliditystyle}{
+ language=C,
+ backgroundcolor=\color{codebg},
+ basicstyle=\ttfamily\footnotesize,
+ keywordstyle=\color{codekeyword}\bfseries,
+ commentstyle=\color{codecomment},
+ stringstyle=\color{codestring},
+ numbers=left, numberstyle=\tiny\color{gray}, numbersep=8pt,
+ frame=single, framerule=0.4pt, breaklines=true,
+ breakatwhitespace=false, showstringspaces=false,
+ tabsize=4, columns=fullflexible, keepspaces=true,
+ morekeywords={pragma,solidity,contract,mapping,address,uint,public,private,internal,external,view,pure,returns,return,function,constructor,if,else,for,while,require,msg,sender},
+ keywordstyle=[2]\color{codetype}\bfseries,
+ morekeywords=[2]{address,uint,bool,string,bytes}
+}
+\begin{document}
+\begin{titlepage}
+\centering
+\vspace*{1.5cm}
+{\Large\bfseries BLOCKCHAIN LABORATORY\par}
+\vspace{1.2cm}
+{\large\bfseries Experiment No. 6\par}
+\vspace{0.8cm}
+{\LARGE\bfseries Creation and Deployment of Smart Contract and Transactions using Solidity and Remix IDE\par}
+\vspace{1.5cm}
+\begin{tabular}{rl}
+\textbf{Name:} & Nikhil Sunchu \\[0.6cm]
+\textbf{Roll No.:} & 31 \\[0.6cm]
+\textbf{Class/section:} & D20A \\[0.6cm]
+\textbf{Date:} & \hrulefill \\[0.6cm]
+\end{tabular}
+\vfill
+{\large Blockchain Laboratory\par}
+\end{titlepage}
+
+\section{Aim}
+Creation and deployment of a smart contract and execution of transactions using Solidity and Remix IDE.
+
+\section{Theory}
+\subsection{1. Smart Contracts and Solidity}
+A smart contract is a program deployed on a blockchain that executes predefined operations when its functions are called. Solidity is a high-level, statically typed programming language commonly used to develop smart contracts for Ethereum-compatible blockchain platforms. Remix IDE provides a browser-based environment for writing, compiling, deploying, and testing Solidity contracts.
+
+\subsection{2. State Variables and Constructor}
+State variables store data associated with a deployed contract. In this experiment, \texttt{studentName}, \texttt{studentRoll}, and \texttt{transactionCount} store a student's name, roll number, and the number of update-function calls. The constructor executes once during deployment and initializes the student record using the supplied arguments.
+
+\subsection{3. Functions and Visibility}
+Functions define the behaviour of a smart contract. The \texttt{public} visibility specifier allows functions to be called externally. The \texttt{updateName()} and \texttt{updateRoll()} functions modify stored state. Public state variables also have automatically generated getter functions, allowing their values to be read through Remix.
+
+\subsection{4. Deployment and Transactions}
+Compilation checks the source code and generates contract artifacts, including bytecode and an ABI. Deployment creates a contract instance in the selected blockchain environment. A state-changing function call is submitted as a transaction and updates the contract's state. In Remix VM, transactions are processed on a simulated blockchain and do not require real Ether.
+
+\subsection{5. Calls and Transaction Count}
+Reading a public state variable through its getter is a read operation and does not modify contract state. In this contract, each successful call to \texttt{updateName()} or \texttt{updateRoll()} increments \texttt{transactionCount}. The counter therefore demonstrates the number of update-function executions in the experiment; it does not count the deployment or getter calls.
+
+\section{Tools and Environment Used}
+\begin{itemize}
+    \item Remix IDE (browser-based development environment)
+    \item Solidity compiler, version 0.8.34 as shown in the compiler panel
+    \item Remix VM with the Osaka VM setting
+    \item Solidity source file: \texttt{StudentRecord.sol}
+    \item Remix Solidity Compiler and Deploy \& Run Transactions panels
+\end{itemize}
+
+\section{Tasks Performed}
+\subsection{Task 1 -- Write the Solidity Program}
+\begin{itemize}
+    \item Created a Solidity source file named \texttt{StudentRecord.sol} in Remix IDE.
+    \item Defined the \texttt{StudentRecord} contract with student name, roll number, and transaction count variables.
+    \item Used a constructor to initialize the student record during deployment.
+    \item Implemented \texttt{updateName()} and \texttt{updateRoll()} to modify the stored values.
+    \item Incremented \texttt{transactionCount} after each update.
+\end{itemize}
+
+{\renewcommand{\baselinestretch}{0.9}\selectfont
+\begin{lstlisting}[style=soliditystyle]
+ // SPDX-License-Identifier: MIT
+ pragma solidity ^0.8.20;
+
+ contract StudentRecord {
+     string public studentName;
+     uint256 public studentRoll;
+     uint256 public transactionCount;
+
+     constructor(string memory _name, uint256 _roll) {
+         studentName = _name;
+         studentRoll = _roll;
+         transactionCount = 0;
+     }
+
+     function updateName(string memory _name) public {
+         studentName = _name;
+         transactionCount++;
+     }
+
+     function updateRoll(uint256 _roll) public {
+         studentRoll = _roll;
+         transactionCount++;
+     }
+ }
+\end{lstlisting}
+}
+
+\subsection{Task 2 -- Compile the Contract}
+\begin{itemize}
+    \item Opened the Solidity Compiler panel in Remix IDE.
+    \item Selected a compatible Solidity 0.8.x compiler.
+    \item Compiled \texttt{StudentRecord.sol} and confirmed successful compilation.
+    \item The source code and compiler panel are shown in Figure~\ref{fig:compile}.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.96\textwidth,height=0.42\textheight,keepaspectratio]{image.png}
+\caption{StudentRecord source code and successful compilation in Remix IDE}
+\label{fig:compile}
+\end{figure}
+
+\subsection{Task 3 -- Deploy the Contract}
+\begin{itemize}
+    \item Opened the Deploy \& Run Transactions panel.
+    \item Selected Remix VM as the execution environment.
+    \item Supplied \texttt{Nikhil Sunchu} and \texttt{31} as constructor arguments.
+    \item Deployed the \texttt{StudentRecord} contract and confirmed that it appeared under Deployed Contracts.
+    \item The deployment and decoded constructor arguments are shown in Figure~\ref{fig:deploy}.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth,height=0.40\textheight,keepaspectratio]{swappy-20261019-094304.png}
+\caption{Deployment of StudentRecord in Remix VM}
+\label{fig:deploy}
+\end{figure}
+
+\subsection{Task 4 -- Execute State-Changing Transactions}
+\begin{itemize}
+    \item Entered \texttt{Nikhil Bikshapati Sunchu} as the argument to \texttt{updateName()} and executed the transaction.
+    \item Entered \texttt{32} as the argument to \texttt{updateRoll()} and executed the transaction.
+    \item Used the Transact buttons to submit both state-changing function calls.
+    \item Remix VM processed the calls as transactions on the simulated blockchain.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth,height=0.32\textheight,keepaspectratio]{swappy-20261019-094648.png}
+\caption{Execution of updateName() and updateRoll() transactions}
+\label{fig:transactions}
+\end{figure}
+
+\subsection{Task 5 -- Verify the Updated Values}
+\begin{itemize}
+    \item Called the \texttt{studentName()} getter and observed \texttt{Nikhil Bikshapati Sunchu}.
+    \item Called the \texttt{studentRoll()} getter and observed \texttt{32}.
+    \item Called the \texttt{transactionCount()} getter and observed \texttt{2}.
+    \item Confirmed that both update functions modified the stored values and incremented the counter.
+    \item The returned values are shown in Figure~\ref{fig:verification}.
+\end{itemize}
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.31\textwidth,height=0.27\textheight,keepaspectratio]{swappy-20261019-094648.png}
+\hfill
+\includegraphics[width=0.31\textwidth,height=0.27\textheight,keepaspectratio]{swappy-20261019-094707.png}
+\hfill
+\includegraphics[width=0.31\textwidth,height=0.27\textheight,keepaspectratio]{swappy-20261019-094725.png}
+\caption{Verification of the updated student name, roll number, and transaction count}
+\label{fig:verification}
+\end{figure}
+
+\section{Result}
+The \texttt{StudentRecord} smart contract was successfully written in Solidity, compiled, and deployed using Remix IDE and Remix VM. The stored student name was updated to \texttt{Nikhil Bikshapati Sunchu}, and the roll number was updated to \texttt{32}. The \texttt{transactionCount} getter returned \texttt{2}, confirming that both state-changing update functions were executed successfully.
+
+\section{Conclusion}
+The experiment provided practical experience in creating, compiling, and deploying a Solidity smart contract using Remix IDE. Interacting with the deployed \texttt{StudentRecord} contract demonstrated constructor-based initialization, public state variables, state-changing functions, and getter calls. The experiment also illustrated how transactions can update contract state in a simulated blockchain environment without using real cryptocurrency.
+\end{document}
