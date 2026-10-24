@@ -1,0 +1,213 @@
+% !TEX program = pdflatex
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[expansion=false]{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{enumitem}
+
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,
+ pdftitle={Blockchain Laboratory - Experiment 8},pdfauthor={Nikhil Sunchu}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Blockchain Laboratory}
+\rhead{Experiment No. 8}
+\cfoot{Page \thepage}
+\setlength{\headheight}{15pt}
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{codecomment}{RGB}{80,120,80}
+\definecolor{codekeyword}{RGB}{70,70,150}
+\definecolor{codestring}{RGB}{150,70,70}
+\definecolor{codetype}{RGB}{0,110,110}
+\lstdefinestyle{soliditystyle}{
+ language=C,
+ backgroundcolor=\color{codebg},
+ basicstyle=\ttfamily\footnotesize,
+ keywordstyle=\color{codekeyword}\bfseries,
+ commentstyle=\color{codecomment},
+ stringstyle=\color{codestring},
+ numbers=left, numberstyle=\tiny\color{gray}, numbersep=8pt,
+ frame=single, framerule=0.4pt, breaklines=true,
+ showstringspaces=false, tabsize=4, columns=fullflexible, keepspaces=true,
+ morekeywords={pragma,solidity,contract,mapping,address,uint,public,private,internal,external,view,pure,returns,return,function,constructor,if,else,for,while,require,msg,sender},
+ morekeywords=[2]{address,uint,bool,string,bytes},
+ keywordstyle=[2]\color{codetype}\bfseries
+}
+\begin{document}
+\begin{titlepage}
+\centering
+\vspace*{1.5cm}
+{\Large\bfseries BLOCKCHAIN LABORATORY\par}
+\vspace{1.2cm}
+{\large\bfseries Experiment No. 8\par}
+\vspace{0.8cm}
+{\LARGE\bfseries Configuring a Cryptocurrency Wallet using MetaMask and Integrating it with a DApp\par}
+\vspace{1.5cm}
+\begin{tabular}{rl}
+\textbf{Name:} & Nikhil Sunchu \\[0.6cm]
+\textbf{Roll No.:} & 31 \\[0.6cm]
+\textbf{Class/section:} & D20A \\[0.6cm]
+\textbf{Date:} \\[0.6cm]
+\end{tabular}
+\vfill
+{\large Blockchain Laboratory\par}
+\end{titlepage}
+
+\section{Aim}
+Configuring a cryptocurrency wallet using MetaMask and integrating it with a decentralized application (DApp).
+
+\section{Theory}
+\subsection{1. Cryptocurrency Wallets}
+A cryptocurrency wallet manages blockchain accounts and allows users to approve transactions. MetaMask is a browser wallet used to connect to Ethereum-compatible networks, display the active account, and authorize contract interactions. The wallet does not store blockchain assets directly; it manages the credentials used to access an account.
+
+\subsection{2. Sepolia Test Network}
+Sepolia is an Ethereum test network used to develop and test decentralized applications without using real Ether. Test ETH is used to pay transaction gas on the test network. In this experiment, MetaMask and Remix were connected to Sepolia Testnet, with chain ID \texttt{11155111}.
+
+\subsection{3. Decentralized Applications and Smart Contracts}
+A decentralized application (DApp) provides an interface for interacting with blockchain smart contracts. Remix IDE can compile Solidity source code, deploy contracts, and call their functions. MetaMask acts as the wallet provider through which a user approves state-changing transactions.
+
+\subsection{4. Contract Calls and Transactions}
+Reading a public state variable through its getter is a read-only operation and does not require a blockchain transaction. Calling a state-changing function, such as \texttt{updateName()} or \texttt{updateRoll()}, requires a transaction signed through the connected wallet and updates the contract state when mined.
+
+\section{Tools and Environment Used}
+\begin{itemize}[leftmargin=1.5em]
+\item MetaMask browser extension.
+\item Sepolia Ethereum test network (chain ID 11155111).
+\item Remix IDE version 2.6.8.
+\item Solidity compiler version 0.8.34.
+\item Solidity source file: \texttt{StudentRecord.sol}.
+\item Contract deployed through Remix using the Browser Extension provider.
+\end{itemize}
+
+\section{Tasks Performed}
+\subsection{Task 1 -- Configure the MetaMask Wallet}
+Opened MetaMask and selected the Sepolia test network. The wallet interface confirmed that Sepolia was selected. No real cryptocurrency was used in the experiment.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.68\textwidth]{fig1_metamask.png}
+\caption{MetaMask wallet configured for the Sepolia test network}
+\end{figure}
+
+\subsection{Task 2 -- Open Remix IDE}
+Opened Remix IDE and used the File Explorer to create the Solidity source file for the DApp.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.94\textwidth]{fig2_remix_workspace.png}
+\caption{Remix IDE workspace}
+\end{figure}
+
+\subsection{Task 3 -- Write the Solidity Smart Contract}
+Created \texttt{StudentRecord.sol}. The contract stores a student's name and roll number, initializes both values through its constructor, and provides functions to update them.
+
+\begin{lstlisting}[style=soliditystyle]
+ // SPDX-License-Identifier: MIT
+ pragma solidity ^0.8.20;
+
+ contract StudentRecord {
+     string public studentName;
+     uint256 public studentRoll;
+
+     constructor(string memory _name, uint256 _roll) {
+         studentName = _name;
+         studentRoll = _roll;
+     }
+
+     function updateName(string memory _name) public {
+         studentName = _name;
+     }
+
+     function updateRoll(uint256 _roll) public {
+         studentRoll = _roll;
+     }
+ }
+\end{lstlisting}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.96\textwidth]{fig3_contract_source.png}
+\caption{StudentRecord Solidity source code in Remix}
+\end{figure}
+
+\subsection{Task 4 -- Compile the Contract}
+Opened the Solidity Compiler panel and compiled \texttt{StudentRecord.sol} using compiler version 0.8.34. The green success indicator confirmed that compilation completed.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.92\textwidth]{fig4_compile.png}
+\caption{Successful compilation of StudentRecord}
+\end{figure}
+
+\subsection{Task 5 -- Connect Remix to MetaMask}
+In the Deploy \& Run Transactions panel, selected the Browser Extension environment and the Sepolia Testnet -- MetaMask provider. Remix displayed the connected account and Sepolia network.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.96\textwidth]{fig5_wallet_connected.png}
+\caption{Remix connected to MetaMask on Sepolia}
+\end{figure}
+
+\subsection{Task 6 -- Deploy the Smart Contract}
+Entered \texttt{Nikhil Sunchu} and \texttt{31} as the constructor arguments and deployed the contract. Remix reported that the deployment transaction was mined and execution completed. The contract was available under Deployed Contracts on Sepolia.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.98\textwidth]{fig6_deployment.png}
+\caption{Successful deployment and transaction details}
+\end{figure}
+
+\subsection{Task 7 -- Verify the Initial Contract State}
+Called the public getter functions to read the initial values stored by the deployed contract. The returned values were \texttt{Nikhil Sunchu} and \texttt{31}.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.6\textwidth]{fig7_initial_name.png}
+\caption{Initial student name returned by the contract}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.6\textwidth]{fig8_initial_roll.png}
+\caption{Initial student roll number returned by the contract}
+\end{figure}
+
+\subsection{Task 8 -- Execute State-Changing Transactions}
+Entered \texttt{Nikhil Sunchu IT} in \texttt{updateName()} and submitted the transaction through MetaMask. Then entered \texttt{32} in \texttt{updateRoll()} and submitted the second transaction. Remix showed that both transactions were mined and execution completed.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.98\textwidth]{fig9_update_name.png}
+\caption{Successful updateName transaction}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.98\textwidth]{fig10_update_roll.png}
+\caption{Successful updateRoll transaction}
+\end{figure}
+
+\subsection{Task 9 -- Verify the Updated Contract State}
+Called the getter functions after the transactions. The final stored student name was \texttt{Nikhil Sunchu IT}, and the final roll number was \texttt{32}.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.5\textwidth]{fig11_final_name.png}
+\caption{Final student name returned by the contract}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.5\textwidth]{fig12_final_roll.png}
+\caption{Final student roll number returned by the contract}
+\end{figure}
+
+\section{Result}
+MetaMask was configured to use the Sepolia test network and successfully connected to Remix IDE. The \texttt{StudentRecord} smart contract was compiled and deployed to Sepolia with the initial values \texttt{Nikhil Sunchu} and \texttt{31}. State-changing transactions updated the name to \texttt{Nikhil Sunchu IT} and the roll number to \texttt{32}. The final values were verified through the contract's public getter functions.
+
+\section{Conclusion}
+The experiment provided practical experience in configuring a cryptocurrency wallet, connecting MetaMask to a DApp, and deploying and interacting with a Solidity smart contract on a test network. It demonstrated the distinction between read-only calls and state-changing transactions, and showed how MetaMask authorizes blockchain transactions.
+
+\end{document}
