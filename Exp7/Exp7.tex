@@ -1,0 +1,269 @@
+% !TEX program = pdflatex
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[expansion=false]{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,
+ pdftitle={Blockchain Laboratory - Experiment 7},pdfauthor={Nikhil Sunchu}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Blockchain Laboratory}
+\rhead{Experiment No. 7}
+\cfoot{Page \thepage}
+\setlength{\headheight}{15pt}
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{codecomment}{RGB}{80,120,80}
+\definecolor{codekeyword}{RGB}{70,70,150}
+\definecolor{codestring}{RGB}{150,70,70}
+\definecolor{codetype}{RGB}{0,110,110}
+\lstdefinestyle{soliditystyle}{
+ language=C,
+ backgroundcolor=\color{codebg},
+ basicstyle=\ttfamily\footnotesize,
+ keywordstyle=\color{codekeyword}\bfseries,
+ commentstyle=\color{codecomment},
+ stringstyle=\color{codestring},
+ numbers=left, numberstyle=\tiny\color{gray}, numbersep=8pt,
+ frame=single, framerule=0.4pt, breaklines=true,
+ breakatwhitespace=false, showstringspaces=false,
+ tabsize=4, columns=fullflexible, keepspaces=true,
+ morekeywords={pragma,solidity,contract,mapping,address,uint,public,private,internal,external,view,pure,returns,return,function,constructor,if,else,for,while,require,msg,sender},
+ morekeywords=[2]{address,uint,bool,string,bytes},
+ keywordstyle=[2]\color{codetype}\bfseries
+}
+\lstdefinestyle{javascriptstyle}{
+ language=Java,
+ backgroundcolor=\color{codebg},
+ basicstyle=\ttfamily\footnotesize,
+ keywordstyle=\color{codekeyword}\bfseries,
+ commentstyle=\color{codecomment},
+ stringstyle=\color{codestring},
+ numbers=left, numberstyle=\tiny\color{gray}, numbersep=8pt,
+ frame=single, framerule=0.4pt, breaklines=true,
+ showstringspaces=false, tabsize=2, columns=fullflexible,
+ morekeywords={const,let,async,await,module,exports,require,artifacts,deployer}
+}
+\begin{document}
+\begin{titlepage}
+\centering
+\vspace*{1.5cm}
+{\Large\bfseries BLOCKCHAIN LABORATORY\par}
+\vspace{1.2cm}
+{\large\bfseries Experiment No. 7\par}
+\vspace{0.8cm}
+{\LARGE\bfseries Introduction to Truffle, Establishing a Local Blockchain and Deployment of Smart Contract\par}
+\vspace{1.5cm}
+\begin{tabular}{rl}
+\textbf{Name:} & Nikhil Sunchu \\[0.6cm]
+\textbf{Roll No.:} & 31 \\[0.6cm]
+\textbf{Class/section:} & D20A \\[0.6cm]
+\textbf{Date:} & 20 October 2026 \\[0.6cm]
+\end{tabular}
+\vfill
+{\large Blockchain Laboratory\par}
+\end{titlepage}
+
+\section{Aim}
+Introduction to Truffle, establishing a local blockchain using Ganache, and deployment of a smart contract.
+
+\section{Theory}
+\subsection{1. Truffle Framework}
+Truffle is a development framework for Ethereum-compatible smart contracts. It provides commands to initialize a project, compile Solidity contracts, manage deployment scripts called migrations, and interact with deployed contracts through a console. A Truffle project separates contract source files, migration scripts, tests, build artifacts, and network configuration.
+
+\subsection{2. Ganache Local Blockchain}
+Ganache provides a local Ethereum-compatible blockchain for development and testing. It creates test accounts funded with simulated Ether and exposes a JSON-RPC endpoint through which development tools can submit transactions and query blockchain data. The local chain used in this experiment was available at \texttt{127.0.0.1:8545} with chain ID \texttt{1337}.
+
+\subsection{3. Solidity Smart Contracts}
+A smart contract is a program deployed to a blockchain. Solidity is a statically typed programming language used to implement contracts on Ethereum-compatible networks. The \texttt{StudentRecord} contract stores a student's name and roll number, initializes them through a constructor, and provides functions to update the values.
+
+\subsection{4. Compilation, Migration and Deployment}
+Truffle compiles Solidity source code into contract artifacts, including the ABI and bytecode. A migration script specifies how a contract is deployed and which constructor arguments are supplied. When a migration is run against a configured network, Truffle submits the deployment transaction and reports the resulting contract address, block number, and gas usage.
+
+\subsection{5. Transactions and Contract State}
+Reading public state variables through getter functions does not change the blockchain state. Calling state-changing functions submits transactions that are recorded in blocks and update the stored values. The contract state can be checked through the Truffle console after deployment and after subsequent transactions.
+
+\section{Tools and Environment Used}
+\begin{itemize}[itemsep=2pt]
+    \item Operating environment: Linux terminal
+    \item Node.js version: 22.23.3; npm version: 10.9.9
+    \item Bun used to manage project dependencies and execute commands
+    \item Truffle version: 5.11.5
+    \item Ganache version: 7.9.1
+    \item Solidity compiler: 0.8.21
+    \item Project configuration: \texttt{truffle-config.js}
+    \item Contract file: \texttt{contracts/StudentRecord.sol}
+    \item Migration file: \texttt{migrations/2\_deploy\_student\_record.js}
+\end{itemize}
+
+\section{Tasks Performed}
+\subsection{Task 1 -- Initialize the Truffle Project}
+\begin{itemize}[itemsep=2pt]
+    \item Installed Node.js and npm using the existing development environment and installed Truffle locally using Bun.
+    \item Initialized the project using \texttt{bunx truffle init}.
+    \item Verified that the project contained the \texttt{contracts}, \texttt{migrations}, and \texttt{test} directories, along with \texttt{truffle-config.js}.
+\end{itemize}
+
+\subsection{Task 2 -- Establish the Local Blockchain}
+\begin{itemize}[itemsep=2pt]
+    \item Started Ganache using \texttt{bunx ganache}.
+    \item Confirmed that Ganache created ten test accounts and started its RPC server at \texttt{127.0.0.1:8545}.
+    \item Used chain ID \texttt{1337} for the local development network.
+\end{itemize}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.94\textwidth,height=0.23\textheight,keepaspectratio]{exp7_assets/ganache.png}
+\caption{Ganache local blockchain running and listening on the RPC endpoint}
+\label{fig:ganache}
+\end{figure}
+
+\subsection{Task 3 -- Write the Solidity Smart Contract}
+Created \texttt{contracts/StudentRecord.sol} with two public state variables, a constructor, and two functions for updating the student's name and roll number. The contract source code is shown below.
+\begin{lstlisting}[style=soliditystyle]
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract StudentRecord {
+    string public studentName;
+    uint256 public studentRoll;
+
+    constructor(string memory _name, uint256 _roll) {
+        studentName = _name;
+        studentRoll = _roll;
+    }
+
+    function updateName(string memory _name) public {
+        studentName = _name;
+    }
+
+    function updateRoll(uint256 _roll) public {
+        studentRoll = _roll;
+    }
+}
+\end{lstlisting}
+
+\subsection{Task 4 -- Compile the Contract}
+\begin{itemize}[itemsep=2pt]
+    \item Ran \texttt{bunx truffle compile} from the project directory.
+    \item Truffle compiled \texttt{StudentRecord.sol} using Solidity compiler 0.8.21.
+    \item The contract artifacts were written to \texttt{build/contracts}.
+\end{itemize}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.96\textwidth,height=0.22\textheight,keepaspectratio]{exp7_assets/compile.png}
+\caption{Successful compilation of StudentRecord using Truffle}
+\label{fig:compile}
+\end{figure}
+
+\subsection{Task 5 -- Configure the Network and Verify the Connection}
+Configured the Truffle development network to use the local Ganache RPC endpoint. The relevant configuration was:
+\begin{lstlisting}[style=javascriptstyle]
+networks: {
+  development: {
+    host: "127.0.0.1",
+    port: 8545,
+    network_id: "*",
+  },
+},
+\end{lstlisting}
+The Truffle console was opened with \texttt{bunx truffle console --network development}. The chain ID and number of available accounts were checked using the following commands:
+\begin{lstlisting}[style=javascriptstyle]
+web3.eth.getChainId()
+(await web3.eth.getAccounts()).length
+\end{lstlisting}
+The returned chain ID was \texttt{1337}, and ten accounts were available.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.94\textwidth,height=0.18\textheight,keepaspectratio]{exp7_assets/connection.png}
+\caption{Verification of the Ganache chain ID and available accounts in Truffle}
+\label{fig:connection}
+\end{figure}
+
+\subsection{Task 6 -- Create the Migration Script}
+Created \texttt{migrations/2\_deploy\_student\_record.js} to deploy the contract with the initial student name and roll number. The migration source code is shown below.
+\begin{lstlisting}[style=javascriptstyle]
+const StudentRecord = artifacts.require("StudentRecord");
+
+module.exports = function (deployer) {
+  deployer.deploy(StudentRecord, "Nikhil Sunchu", 31);
+};
+\end{lstlisting}
+
+\subsection{Task 7 -- Deploy the Smart Contract}
+\begin{itemize}[itemsep=2pt]
+    \item Executed \texttt{bunx truffle migrate --network development}.
+    \item Truffle ran the migration and deployed \texttt{StudentRecord} to Ganache.
+    \item The deployment was recorded in block 1. Truffle reported gas usage of 514262 and a total deployment cost of 0.00173563425 ETH.
+\end{itemize}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.97\textwidth,height=0.43\textheight,keepaspectratio]{exp7_assets/deployment.png}
+\caption{Successful deployment of StudentRecord to the Ganache development network}
+\label{fig:deployment}
+\end{figure}
+The deployed contract address was \texttt{0xE3464dFA0Cc235246965be2394F9020E215a81c2}.
+
+\subsection{Task 8 -- Verify the Initial Contract State}
+Loaded the deployed contract instance in the Truffle console and called the public getter functions.
+\begin{lstlisting}[style=javascriptstyle]
+const instance = await StudentRecord.deployed();
+await instance.studentName();
+(await instance.studentRoll()).toString();
+\end{lstlisting}
+The initial values returned were \texttt{Nikhil Sunchu} and \texttt{31}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.96\textwidth,height=0.29\textheight,keepaspectratio]{exp7_assets/initial_values.png}
+\caption{Verification of the initial student name and roll number}
+\label{fig:initial}
+\end{figure}
+
+\subsection{Task 9 -- Execute Transactions and Verify the Updated State}
+Submitted transactions to update the student's name and roll number, then queried the contract again.
+\begin{lstlisting}[style=javascriptstyle]
+await instance.updateName("Nikhil Sunchu Updated");
+await instance.updateRoll(32);
+await instance.studentName();
+(await instance.studentRoll()).toString();
+\end{lstlisting}
+The transactions succeeded. The name was updated to \texttt{Nikhil Sunchu Updated} and the roll number to \texttt{32}. The name update was recorded in block 2 and the roll-number update in block 3.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.98\textwidth,height=0.42\textheight,keepaspectratio]{exp7_assets/updates.png}
+\caption{Successful update transactions and verification of the updated contract state}
+\label{fig:updates}
+\end{figure}
+The final block number and deployed contract address were checked using:
+\begin{lstlisting}[style=javascriptstyle]
+await web3.eth.getBlockNumber();
+await instance.address;
+\end{lstlisting}
+The final block number was \texttt{3}, and the contract address matched the deployment output.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.96\textwidth,height=0.15\textheight,keepaspectratio]{exp7_assets/final_verification.png}
+\caption{Final verification of the blockchain block number and contract address}
+\label{fig:final}
+\end{figure}
+
+\section{Result}
+The Truffle project was initialized successfully, and a local blockchain was established using Ganache. The \texttt{StudentRecord} smart contract was compiled using Solidity 0.8.21 and deployed to the development network. The initial student name and roll number were verified as \texttt{Nikhil Sunchu} and \texttt{31}. Subsequent transactions updated the name to \texttt{Nikhil Sunchu Updated} and the roll number to \texttt{32}. The final local blockchain height was block 3, and the deployed contract address was verified.
+
+\end{document}
