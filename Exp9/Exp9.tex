@@ -1,0 +1,171 @@
+
+% !TEX program = pdflatex
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[expansion=false]{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{caption}
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,
+ pdftitle={Blockchain Laboratory - Experiment 9},pdfauthor={Nikhil Sunchu}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Blockchain Laboratory}
+\rhead{Experiment No. 9}
+\cfoot{Page \thepage}
+\setlength{\headheight}{15pt}
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{codecomment}{RGB}{80,120,80}
+\definecolor{codekeyword}{RGB}{70,70,150}
+\definecolor{codestring}{RGB}{150,70,70}
+\definecolor{codetype}{RGB}{0,110,110}
+\lstdefinestyle{soliditystyle}{
+ language=C, backgroundcolor=\color{codebg},
+ basicstyle=\ttfamily\footnotesize, keywordstyle=\color{codekeyword}\bfseries,
+ commentstyle=\color{codecomment}, stringstyle=\color{codestring},
+ numbers=left, numberstyle=\tiny\color{gray}, numbersep=8pt,
+ frame=single, framerule=0.4pt, breaklines=true, showstringspaces=false,
+ tabsize=4, columns=fullflexible, keepspaces=true,
+ morekeywords={pragma,solidity,contract,mapping,address,uint,public,private,internal,external,view,pure,returns,return,function,constructor,if,else,for,while,require,msg,sender,import},
+ keywordstyle=[2]\color{codetype}\bfseries
+}
+\newcommand{\reportfigure}[3]{\begin{figure}[H]\centering
+\includegraphics[width=#2\textwidth,height=0.30\textheight,keepaspectratio]{fig#1.png}
+\caption{#3}\end{figure}}
+\begin{document}
+\sloppy
+\begin{titlepage}
+\centering
+\vspace*{1.5cm}
+{\Large\bfseries BLOCKCHAIN LABORATORY\par}
+\vspace{1.2cm}
+{\large\bfseries Experiment No. 9\par}
+\vspace{0.8cm}
+{\LARGE\bfseries Creation and Deployment of an ERC20 Token using Remix IDE\par}
+\vspace{1.5cm}
+\begin{tabular}{rl}
+\textbf{Name:} & Nikhil Sunchu \\[0.6cm]
+\textbf{Roll No.:} & 31 \\[0.6cm]
+\textbf{Class/section:} & D20A \\[0.6cm]
+\textbf{Date:} \\[0.6cm]
+\end{tabular}
+\vfill
+{\large Blockchain Laboratory\par}
+\end{titlepage}
+
+\section{Aim}
+To create an ERC20 token in Remix IDE by writing the EduCoin (EDC) contract in Solidity, compiling it, connecting Remix IDE to MetaMask on the Sepolia testnet, deploying the token, and verifying its ERC20 functions.
+
+\section{Theory}
+\subsection{1. ERC20 Token Standard}
+ERC20 is a standard interface for fungible tokens on Ethereum. It defines functions such as \texttt{totalSupply()}, \texttt{balanceOf()}, \texttt{transfer()}, \texttt{approve()}, \texttt{allowance()}, and \texttt{transferFrom()}, along with the \texttt{Transfer} and \texttt{Approval} events. This common interface allows wallets, exchanges, and decentralized applications to interact with compatible tokens.
+
+\subsection{2. OpenZeppelin ERC20 Implementation}
+OpenZeppelin provides an implementation of the ERC20 standard. A contract can inherit from \texttt{ERC20} and specify its token name and symbol. The inherited implementation supplies the standard functions and uses 18 decimals by default. In this experiment, the EduCoin contract mints an initial supply of 1,000 EDC to the deploying wallet.
+
+\subsection{3. Sepolia Test Network and MetaMask}
+Sepolia is an Ethereum test network used to develop and test contracts without spending real Ether. Test ETH is used to pay transaction gas. Remix IDE's Browser Extension environment connects to MetaMask, which authorizes and signs the deployment transaction using the selected wallet.
+
+\section{Tools and Environment Used}
+\begin{itemize}[leftmargin=1.5em]
+\item Remix IDE (\url{https://remix.ethereum.org}).
+\item MetaMask browser wallet.
+\item Solidity compiler version 0.8.18.
+\item OpenZeppelin Contracts version 4.4.0.
+\item Sepolia Ethereum testnet (chain ID \texttt{11155111}).
+\item Google Cloud Web3 faucet for Sepolia ETH.
+\item Sepolia Etherscan for on-chain verification.
+\end{itemize}
+
+\section{Tasks Performed}
+\subsection{Task 1 -- Configure and Fund MetaMask}
+Configured MetaMask to use the Sepolia testnet and obtained test ETH from the Google Cloud Web3 faucet. The wallet displayed a balance of 0.0500 SepoliaETH. Test ETH was used for deployment gas; no real cryptocurrency was spent.
+\reportfigure{1}{0.62}{MetaMask wallet unlocked on Sepolia.}
+\reportfigure{2}{0.62}{Sepolia testnet selected in MetaMask.}
+\reportfigure{3}{0.62}{Sepolia ETH received from the faucet.}
+
+\subsection{Task 2 -- Write the EduCoin Smart Contract}
+Created \texttt{EduCoin.sol} in Remix IDE. The contract inherits the OpenZeppelin ERC20 implementation, sets the token name to EduCoin and symbol to EDC, and mints 1,000 tokens to the deployer's address in the constructor.
+\begin{lstlisting}[style=soliditystyle,caption={EduCoin.sol smart contract}]
+ // SPDX-License-Identifier: MIT
+ pragma solidity ^0.8.3;
+
+ import "@openzeppelin/contracts@4.4.0/token/ERC20/ERC20.sol";
+
+ contract EduCoin is ERC20 {
+     constructor() ERC20("EduCoin", "EDC") {
+         _mint(msg.sender, 1000 * 10 ** decimals());
+     }
+ }
+\end{lstlisting}
+\textbf{Code explanation:}
+\begin{itemize}[leftmargin=1.5em]
+\item \texttt{pragma solidity \^{}0.8.3;} declares the compatible Solidity compiler range.
+\item The import statement brings in OpenZeppelin's ERC20 implementation, version 4.4.0.
+\item \texttt{contract EduCoin is ERC20} inherits standard ERC20 functionality.
+\item \texttt{ERC20("EduCoin", "EDC")} sets the token name and symbol.
+\item \texttt{\_mint(msg.sender, 1000 * 10 ** decimals())} allocates 1,000 EDC to the deploying wallet. With 18 decimals, this is represented internally as \(1000 \times 10^{18}\) base units.
+\end{itemize}
+\reportfigure{4}{0.94}{EduCoin.sol source code in Remix IDE.}
+
+\subsection{Task 3 -- Compile the Contract}
+Selected Solidity compiler version 0.8.18 in Remix and compiled \texttt{EduCoin.sol}. The successful compilation indicator confirmed that the contract's ABI and bytecode were generated without errors.
+\reportfigure{5}{0.94}{Successful compilation with Solidity 0.8.18.}
+
+\subsection{Task 4 -- Connect Remix IDE to MetaMask}
+In the Deploy \& Run Transactions panel, selected the Browser Extension environment and the Sepolia Testnet--MetaMask provider. Approved the connection request in MetaMask to allow Remix to access the wallet and request transaction signatures.
+\reportfigure{6}{0.94}{Remix connected to MetaMask on Sepolia.}
+\reportfigure{7}{0.58}{MetaMask connection approval for Remix IDE.}
+
+\subsection{Task 5 -- Load and Verify the Deployed Contract}
+The deployed EduCoin contract was loaded into Remix using the \textit{Add Contract} option and its contract address. The contract address recorded in the experiment is \texttt{0x6ca2dcda8f983e7ac73ee4b76cbf34fe21cd749a}.
+\reportfigure{8}{0.94}{Deployed EduCoin contract loaded in Remix.}
+
+\subsection{Task 6 -- Test ERC20 Functions}
+Called the contract's public functions through Remix to verify the token configuration and initial supply.
+\begin{itemize}[leftmargin=1.5em]
+\item \texttt{name()} returned \texttt{EduCoin}.
+\item \texttt{symbol()} returned \texttt{EDC}.
+\item \texttt{decimals()} returned \texttt{18}.
+\item \texttt{totalSupply()} returned \texttt{1000000000000000000000}, equivalent to 1,000 EDC in base units.
+\item \texttt{balanceOf(deployer)} returned \texttt{1000000000000000000000}, confirming that the deployer received the full initial supply.
+\end{itemize}
+\reportfigure{9}{0.94}{The \texttt{name()} and \texttt{symbol()} functions return EduCoin and EDC.}
+\reportfigure{10}{0.94}{The \texttt{decimals()} and \texttt{totalSupply()} functions were verified.}
+\reportfigure{11}{0.94}{The deployer's balance was verified as 1,000 EDC.}
+
+\subsection{Task 7 -- Import the Token and Verify on Etherscan}
+Imported the EDC token into MetaMask using its contract address. MetaMask displayed 1,000 EDC on Sepolia. The token page on Sepolia Etherscan recognized EduCoin (EDC), showing a maximum total supply of 1,000 EDC and one holder with the full supply.
+\reportfigure{12}{0.62}{EduCoin (EDC) visible in MetaMask.}
+\reportfigure{13}{0.94}{EduCoin contract and token supply displayed on Sepolia Etherscan.}
+
+\section{Deployment Record}
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{Wallet address:} \texttt{0xd2bf51666c0ec239c5bfcf6c2fc520a02b63f077}
+\item \textbf{Contract address:} \texttt{0x6ca2dcda8f983e7ac73ee4b76cbf34fe21cd749a}
+\item \textbf{Deployment transaction hash:} \texttt{0x39fafc4e82dd136eefc62deaba09e057d750032ffd9220fe93c6610ee6db6dde}
+\item \textbf{Deployment block:} 11946944
+\item \textbf{Sepolia balance recorded:} 0.05 ETH
+\end{itemize}
+The deployment transaction was signed by MetaMask and mined on Sepolia with successful status. The contract was subsequently loaded into Remix for function testing.
+
+\section{Result}
+The EduCoin (EDC) ERC20 token was successfully created, compiled, and deployed to the Sepolia testnet. The contract's name, symbol, decimals, total supply, and deployer balance were verified. An initial supply of 1,000 EDC was minted to the deploying wallet, imported into MetaMask, and confirmed on Sepolia Etherscan.
+
+\section{Conclusion}
+The experiment demonstrated the creation and deployment of an ERC20 token using Solidity, OpenZeppelin Contracts, Remix IDE, and MetaMask. Testing the contract functions verified its token metadata and initial supply. The use of Sepolia provided a public test blockchain for deployment and verification without spending real cryptocurrency.
+\end{document}
