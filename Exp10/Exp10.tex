@@ -1,0 +1,178 @@
+% !TEX program = pdflatex
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[expansion=false]{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{enumitem}
+
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,
+ pdftitle={Blockchain Laboratory - Experiment 10},pdfauthor={Nikhil Sunchu}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Blockchain Laboratory}
+\rhead{Experiment No. 10}
+\cfoot{Page \thepage}
+\setlength{\headheight}{15pt}
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{codecomment}{RGB}{80,120,80}
+\definecolor{codekeyword}{RGB}{70,70,150}
+\definecolor{codestring}{RGB}{150,70,70}
+\definecolor{codetype}{RGB}{0,110,110}
+\lstdefinestyle{terminalstyle}{
+ backgroundcolor=\color{codebg},
+ basicstyle=\ttfamily\footnotesize,
+ keywordstyle=\color{codekeyword}\bfseries,
+ commentstyle=\color{codecomment},
+ stringstyle=\color{codestring},
+ numbers=none, frame=single, framerule=0.4pt, breaklines=true,
+ showstringspaces=false, tabsize=2, columns=fullflexible, keepspaces=true
+}
+\begin{document}
+\begin{titlepage}
+\centering
+\vspace*{1.5cm}
+{\Large\bfseries BLOCKCHAIN LABORATORY\par}
+\vspace{1.2cm}
+{\large\bfseries Experiment No. 10\par}
+\vspace{0.8cm}
+{\LARGE\bfseries Implementation of Hyperledger Fabric Network and Asset Management using Chaincode\par}
+\vspace{1.5cm}
+\begin{tabular}{rl}
+\textbf{Name:} & Nikhil Sunchu \\[0.6cm]
+\textbf{Roll No.:} & 31 \\[0.6cm]
+\textbf{Class/section:} & D20A \\[0.6cm]
+\textbf{Date:} & 25 October 2026 \\[0.6cm]
+\end{tabular}
+\vfill
+{\large Blockchain Laboratory\par}
+\end{titlepage}
+
+\section{Aim}
+To implement a Hyperledger Fabric network and perform asset management operations using chaincode.
+
+\section{Theory}
+\subsection{1. Hyperledger Fabric}
+Hyperledger Fabric is a permissioned blockchain platform designed for enterprise applications. A Fabric network consists of peer nodes, an ordering service, identities, and channels. Peers host ledgers and execute chaincode, while the ordering service orders endorsed transactions into blocks for distribution to peers.
+
+\subsection{2. Peers, Ordering Service, and Channels}
+Peers maintain the ledger and participate in transaction endorsement and validation. The ordering service establishes the order of transactions and delivers blocks to channel members. A channel provides a private logical ledger shared by the organizations that have joined it. In this experiment, a local test network was started with two peer organizations and an ordering service, and the channel \texttt{nikhilsunchu} was created.
+
+\subsection{3. Chaincode}
+Chaincode is the application logic deployed on a Fabric network. It defines the operations that clients can invoke to read or modify ledger state. The sample \texttt{asset-transfer-basic} chaincode was deployed under the name \texttt{basic}. Its asset functions support creation, reading, updating, transfer of ownership, deletion, and retrieval of assets.
+
+\subsection{4. Transactions and Ledger State}
+A query reads current ledger state without submitting a state-changing transaction. An invoke submits a transaction proposal to peers and the ordering service. Once validated and committed, the transaction updates the ledger state. In this experiment, successful invokes returned status \texttt{200}; querying the deleted asset returned an asset-not-found response, confirming the deletion.
+
+\section{Tools and Environment Used}
+\begin{itemize}[leftmargin=1.5em]
+\item Linux terminal and Docker.
+\item Docker Compose.
+\item Hyperledger Fabric test network, version 2.5.16.
+\item Fabric command-line binaries, including \texttt{peer}.
+\item Fabric sample chaincode: \texttt{asset-transfer-basic} (Go).
+\item Channel name: \texttt{nikhilsunchu}.
+\item Chaincode name: \texttt{basic}, version 1.0.
+\end{itemize}
+
+\section{Tasks Performed}
+\subsection{Task 1 -- Verify the Environment and Install Fabric}
+Verified that Docker and Docker Compose were available. Downloaded the official Fabric samples, binaries, and Docker images. The required peer, orderer, and base images for Fabric 2.5.16 were present. Go was installed to package the Go-based chaincode.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.94\textwidth,height=0.40\textheight,keepaspectratio]{exp10_docker_images.png}
+\caption{Hyperledger Fabric Docker images available locally}
+\end{figure}
+
+\subsection{Task 2 -- Start the Network and Create a Channel}
+Started the Fabric test network and created the channel \texttt{nikhilsunchu}. The network included \texttt{peer0.org1.example.com}, \texttt{peer0.org2.example.com}, and \texttt{orderer.example.com}. Org2 was joined to the channel.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.96\textwidth,height=0.36\textheight,keepaspectratio]{exp10_network_start.png}
+\caption{Starting the Fabric test network}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.82\textwidth,height=0.20\textheight,keepaspectratio]{exp10_channel_created.png}
+\caption{Channel creation response for \texttt{nikhilsunchu}}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.82\textwidth,height=0.18\textheight,keepaspectratio]{exp10_org2_joined.png}
+\caption{Org2 peer joined the channel}
+\end{figure}
+
+\subsection{Task 3 -- Deploy and Verify Chaincode}
+Deployed the Go-based \texttt{asset-transfer-basic} sample as chaincode \texttt{basic}. After resolving the missing Go compiler and restarting the Fabric containers, queried the committed definition. The output confirmed version 1.0, sequence 1, and approvals from both \texttt{Org1MSP} and \texttt{Org2MSP}.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.96\textwidth,height=0.20\textheight,keepaspectratio]{exp10_chaincode_committed.png}
+\caption{Committed chaincode definition and organization approvals}
+\end{figure}
+
+\subsection{Task 4 -- Create and Read an Asset}
+Invoked \texttt{CreateAsset} to create \texttt{asset10} with color \texttt{blue}, size 5, owner \texttt{Nikhil}, and appraised value 500. Used \texttt{ReadAsset} to query the asset and verify that its fields were stored on the ledger.
+
+\begin{lstlisting}[style=terminalstyle]
+CreateAsset("asset10", "blue", "5", "Nikhil", "500")
+ReadAsset("asset10")
+\end{lstlisting}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.96\textwidth,height=0.23\textheight,keepaspectratio]{exp10_read_initial.png}
+\caption{Query result for the asset}
+\end{figure}
+
+\subsection{Task 5 -- Update Asset Attributes}
+Invoked \texttt{UpdateAsset} to change the asset color to \texttt{green}, size to 10, and appraised value to 750. The owner remained \texttt{Nikhil}. A subsequent query confirmed the updated values.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.96\textwidth,height=0.27\textheight,keepaspectratio]{exp10_update_asset.png}
+\caption{Successful asset update and verification}
+\end{figure}
+
+\subsection{Task 6 -- Transfer Asset Ownership}
+Invoked \texttt{TransferAsset} to transfer \texttt{asset10} to \texttt{Rahul}. The transaction returned status 200. A subsequent \texttt{ReadAsset} query confirmed that the owner had changed to \texttt{Rahul} while the other fields remained unchanged.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.96\textwidth,height=0.27\textheight,keepaspectratio]{exp10_transfer_asset.png}
+\caption{Successful ownership transfer and updated asset state}
+\end{figure}
+
+\subsection{Task 7 -- Delete an Asset and Verify}
+Created a separate test asset named \texttt{asset11} and invoked \texttt{DeleteAsset}. The delete transaction returned status 200. A subsequent \texttt{ReadAsset} query returned the message that \texttt{asset11} does not exist, confirming deletion.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.96\textwidth,height=0.27\textheight,keepaspectratio]{exp10_delete_asset.png}
+\caption{Asset deletion and expected asset-not-found response}
+\end{figure}
+
+\subsection{Task 8 -- Verify the Final Ledger State}
+Queried \texttt{asset10} and then invoked \texttt{GetAllAssets}. The final output showed \texttt{asset10} with owner \texttt{Rahul}, color \texttt{green}, size 10, and appraised value 750. The asset list contained \texttt{asset10}; \texttt{asset11} was absent.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.96\textwidth,height=0.22\textheight,keepaspectratio]{exp10_final_state.png}
+\caption{Final asset state and output of \texttt{GetAllAssets}}
+\end{figure}
+
+\section{Result}
+A Hyperledger Fabric test network was established with two peer organizations and an ordering service. The channel \texttt{nikhilsunchu} was created, and chaincode \texttt{basic} was deployed and committed with approvals from both organizations. Asset creation, querying, updating, ownership transfer, and deletion were performed successfully. The final ledger query confirmed that \texttt{asset10} remained with owner \texttt{Rahul}, color \texttt{green}, size 10, and appraised value 750, while \texttt{asset11} had been deleted.
+
+\section{Conclusion}
+The experiment provided practical experience in configuring a Hyperledger Fabric network, creating a channel, deploying chaincode, and interacting with ledger assets. It demonstrated how chaincode implements asset-management operations and how transaction responses and subsequent queries can be used to verify changes to the ledger state.
+
+\end{document}
